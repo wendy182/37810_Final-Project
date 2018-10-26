@@ -1,0 +1,131 @@
+---
+title: "Final_Project_37810"
+author: "Yanfei Zhou"
+date: "24/10/2018"
+output: html_document
+---
+
+# Question 1
+### 1 a)
+```{r}
+target = function(x){
+  if (any(x>1) | any(x<0)){
+    return(0)}
+  else{
+    return (dbeta(x,6,4))
+  }
+}
+```
+
+```{r}
+proposalfunction<-function(x){
+  return(rbeta(1,shape1=c*x,shape2=c*(1-x)))
+}
+```
+
+```{r}
+num_iteration=10000
+c=1
+start=runif(1,0,1)
+
+run_metropolis_MCMC <- function(startvalue, iterations){ # initialize an arbitrary point to be the staring values, and set the number of iterations
+  #create a chain to store all the element generated in each iterations
+  chain = rep(0,iterations)
+  #assign the first element in the chain to be the staring value we picked
+  chain[1] = startvalue
+  for (i in 1:iterations){
+    currentx = chain[i]
+    # generate a candidate x* (here named proposal) using the jumping distribution given in the question
+    proposal = proposalfunction(chain[i])
+    # calculate the acceptance ratio, which will be used to decide whether to accept or reject the candidate
+    probab = (target(proposal)/target(chain[i]))*(dbeta(chain[i],shape1=c*proposal,shape2=c*(1-proposal)/dbeta(proposal,shape1=c*chain[i],shape2=c*(1-chain[i]))))
+    #generate a uniform random number u on [0,1]
+    if (runif(1) < probab){
+      # if u<= acceptance ratio, accept the candidate by setiing next element in the chain to the proposal
+      chain[i+1] = proposal
+    }else{
+      # if u<= acceptance ratio, reject the candidate proposal and set next element the same value as last element
+      chain[i+1] = chain[i]
+    }
+  }
+  return(chain)
+}
+```
+
+```{r}
+draws = run_metropolis_MCMC(startvalue=start, num_iteration)
+acceptance_rate_c1 = 1-mean(duplicated(draws))
+acceptance_rate_c1
+```
+
+### 1 b)
+```{r}
+par(mfrow=c(1,3))  #1 row, 3 columns
+plot(draws); acf(draws); hist(draws) 
+```
+
+
+```{r}
+hist(rbeta(10000,6,4))
+```
+
+From the trace plot we can see, the sampler we generated are spread pattenlessly across index and the values are always between [0,1], however, the values are concentrated between [0.4,1]; from autocorrelation plot we see the autocorelation between consecutive samplers are high but decreases as the lag increases. This make sense as the next sample point we decided to add into the resulting vector is highly dependent on the previous sample, but as the simulation proceeds forward, the correlation between next samplers and further previous samplers are decreasing. Also, we found that our algorithm generate a sample whose histogram is very similar to the beta distribution histogram with the required shape parameters.
+
+
+### 1 c)
+```{r}
+c=0.1
+draws = run_metropolis_MCMC(startvalue=start, num_iteration)
+par(mfrow=c(1,3))  #1 row, 3 columns
+plot(draws); acf(draws); hist(draws) 
+acceptance_rate_c01 = 1-mean(duplicated(draws))
+```
+
+
+
+```{r}
+c=2.5
+draws = run_metropolis_MCMC(startvalue=start, num_iteration)
+par(mfrow=c(1,3))  #1 row, 3 columns
+plot(draws); acf(draws); hist(draws) 
+acceptance_rate_c25 = 1-mean(duplicated(draws))
+```
+
+```{r}
+c=10
+draws = run_metropolis_MCMC(startvalue=start, num_iteration)
+par(mfrow=c(1,3))  #1 row, 3 columns
+plot(draws); acf(draws); hist(draws) 
+acceptance_rate_c10 = 1-mean(duplicated(draws))
+```
+
+
+```{r}
+paste0("acceptance rate when c=0.1: ",acceptance_rate_c01)
+paste0("acceptance rate when c=1: ",acceptance_rate_c1)
+paste0("acceptance rate when c=2.5: ",acceptance_rate_c25)
+paste0("acceptance rate when c=10: ",acceptance_rate_c10)
+```
+
+Comparing the acceptance rate of simulation for different values of c, we see the acceptance rate increases, meaning the algorithm are more efficient, when c has larger value. From the trace plot we can also see, when $c=10$, we generate most data points for the target distribution, with same number of iterations.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
