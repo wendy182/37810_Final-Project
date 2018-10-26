@@ -1,15 +1,14 @@
 # Question 3
-
 library(rattle)
 data<-wine
 colnames(wine)
 X<-data[,-1]
-colnames(X)
+#X2<-scale(wine[-1])
 
 # We set two parameters in the function, k which is the number of cluster we want, and X is the dataset we want to cluster
 kmclustering<-function(k,X){
   #initialize k centroids by randomly select k data points from the dataset.
-  set.seed(13)
+  set.seed(123)
   initial_ind = sample(1:nrow(data),k,replace=F)
   initial_cen = X[initial_ind,]
   initial_con = TRUE
@@ -43,21 +42,60 @@ kmclustering<-function(k,X){
   return (X_with_cluster)
 }
 
-
 X_with_cluster<-kmclustering(3,X)
+
+
 
 #install.packages('fpc')
 library('fpc')
-
 plotcluster(X, X_with_cluster$cluster)
 
-plotcluster(X,data$Type)
+
+
+table<-matrix(0,3,3)
+# create a matrix, columns are the real type of wine, rows are conditional on real type, the proportion being clustered as 1,2,3
+for (i in 1:3){
+  for (j in 1:3)
+    table[i,j]<-(sum(X_with_cluster[which(data$Type==i),]$cluster==j))/nrow(data[data$Type==i,])
+}
+table
+
+
+accuracy<-(sum(X_with_cluster[which(data$Type==2),]$cluster==1)+sum(X_with_cluster[which(data$Type==3),]$cluster==2)+sum(X_with_cluster[which(data$Type==1),]$cluster==3))/(nrow(data))
+accuracy
+
+# From the table, we can see that the algorithm clustered most data with type-1 to cluster-1, most data with type-2 to cluster-3, and most data with type-3 to cluster-2
+# Hence we induce from the table that, 
 
 
 
-#define successful rate = mean(correctly cate as type I/all type I+correctly cate as type II/all type II+correctly cate as type III/all typeIII)
 
-which(X_with_cluster$cluster==1) %in% which(data$Type==1)
+
+#Irirs
+table <- matrix(0,3,3)
+rownames(table)<-levels(iris$Species)
+X3<-iris[,-5]
+a=1
+for (i in levels(iris$Species)){
+  for (j in 1:3)
+    table[a,j]<-(sum(X_with_cluster[which(iris$Species==i),]$cluster==j))/nrow(iris[iris$Species==i,])
+  a = a+1
+}
+table
+accuracy<-(sum(X_with_cluster[which(iris$Species=="setosa"),]$cluster==1)+sum(X_with_cluster[which(iris$Species=="versicolor"),]$cluster==3)+sum(X_with_cluster[which(iris$Species=="virginica"),]$cluster==2))/(nrow(data))
+accuracy
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
