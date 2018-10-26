@@ -1,5 +1,3 @@
-
-
 # Question 3
 
 library(rattle)
