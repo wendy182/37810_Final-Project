@@ -198,4 +198,4 @@ new_label1 <- new_cluster(label1,actual)
 right_rate(iris$Species,new_label1)
 ```
  
- We observe that the right rate declines a little bit for scaled data. So scaling can not improve the performance of k-means clustering in this case.
+We observe that the right rate declines a little bit for scaled data. So scaling can not improve the accuracy in the way we defined of k-means clustering in this case. We may conclude that wether scaling help to improve performance depends on the structure of the dataset.
