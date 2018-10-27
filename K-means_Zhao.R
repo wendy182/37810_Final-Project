@@ -64,7 +64,7 @@ label <- k_means_cluster(newdata,3)
 plotcluster(newdata,label)
 matching_matrix(wine$Type,label,num_cluster)
 
-actual <- c(2,3,1)
+actual <- c(1,3,2)
 new_label <- new_cluster(label,actual)
 right_rate(wine$Type,new_label)
 
@@ -75,8 +75,8 @@ plotcluster(newdata1,label1)
 #evaluate accuracy
 matching_matrix(wine$Type,label1,num_cluster)
 
-actual <- c(2,3,1)
-new_label <- new_cluster(label1,actual)
+actual <- c(1,3,2)
+new_label1 <- new_cluster(label1,actual)
 right_rate(wine$Type,new_label1)
 
 
@@ -90,8 +90,8 @@ label <- k_means_cluster(newdata,3)
 plotcluster(newdata,label)
 matching_matrix(iris$Species,label,num_cluster)
 
-actual <- c(2,3,1)
-new_label <- new_cluster(label,actual)
+actual <- c(1,3,2)
+new_label1 <- new_cluster(label,actual)
 right_rate(iris$Species,new_label)
 
 ##how does scale affects?
@@ -101,7 +101,7 @@ plotcluster(newdata1,label1)
 #evaluate accuracy
 matching_matrix(iris$Species,label1,num_cluster)
 
-actual <- c(2,3,1)
-new_label <- new_cluster(label1,actual)
+actual <- c(1,3,2)
+new_label1 <- new_cluster(label1,actual)
 right_rate(iris$Species,new_label1)
 
